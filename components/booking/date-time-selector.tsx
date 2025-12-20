@@ -448,7 +448,12 @@ export function DateTimeSelector() {
                           </div>
                           <div>
                             <p className="text-xs text-muted-foreground">{t('date')}</p>
-                            <p className="text-sm font-semibold text-foreground">{data.selectedDate ? formatSelectedDate(data.selectedDate) : ''}</p>
+                            <p className="text-sm font-semibold text-foreground">{previewDate ? format.dateTime(previewDate, {
+                              weekday: 'long',
+                              month: 'long',
+                              day: 'numeric',
+                              timeZone: PST_TZ
+                            }) : ''}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
