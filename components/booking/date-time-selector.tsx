@@ -264,7 +264,19 @@ export function DateTimeSelector() {
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      update({ selectedDate: date })
+      console.log('📅 Calendar raw date selected:', date)
+      console.log('📅 Calendar raw date ISO:', date.toISOString())
+      
+      // Normalizar la fecha a medianoche en PST para evitar desplazamientos de timezone
+      const dateStr = formatInTimeZone(date, PST_TZ, "yyyy-MM-dd")
+      console.log('📅 Date in PST format (yyyy-MM-dd):', dateStr)
+      
+      const normalizedDate = new Date(`${dateStr}T00:00:00`)
+      console.log('📅 Normalized date:', normalizedDate)
+      console.log('📅 Normalized date ISO:', normalizedDate.toISOString())
+      console.log('📅 Normalized date formatted in PST:', formatInTimeZone(normalizedDate, PST_TZ, "EEEE, MMMM d"))
+      
+      update({ selectedDate: normalizedDate })
     }
   }
 
@@ -429,6 +441,8 @@ export function DateTimeSelector() {
                     <h4 className="text-sm sm:text-base font-semibold text-foreground mb-1 sm:mb-2">{t('appointmentSummary')}</h4>
                     {data.selectedDate && data.selectedTime ? (
                       <div className="space-y-2">
+                        {console.log('📊 Summary - data.selectedDate:', data.selectedDate, 'ISO:', data.selectedDate.toISOString())}
+                        {console.log('📊 Summary - formatted in PST:', formatInTimeZone(data.selectedDate, PST_TZ, "EEEE, MMMM d"))}
                         <div className="flex items-center gap-2">
                           <div className="p-1.5 rounded-md bg-muted/50">
                             <CalendarIcon className="h-3 w-3 text-muted-foreground" />
