@@ -271,15 +271,6 @@ export function DateTimeSelector() {
     update({ selectedTime: time })
   }
 
-  const formatSelectedDate = (date: Date) => {
-    return format.dateTime(date, {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      timeZone: PST_TZ
-    })
-  }
-
   // Crear una vista previa de la fecha/hora combinada en PST
   const previewDate = useMemo(() => {
     if (data.selectedDate && data.selectedTime) {
