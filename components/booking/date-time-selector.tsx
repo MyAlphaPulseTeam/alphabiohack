@@ -284,8 +284,13 @@ export function DateTimeSelector() {
     update({ selectedTime: time })
   }
 
-  // Crear una vista previa de la fecha/hora combinada en PST
-  // (ya no se necesita, se usa data.selectedDate y data.selectedTime directamente)
+  // Log para debug de la fecha seleccionada
+  useEffect(() => {
+    if (data.selectedDate && data.selectedTime) {
+      console.log('📊 Summary - data.selectedDate:', data.selectedDate, 'ISO:', data.selectedDate.toISOString())
+      console.log('📊 Summary - formatted in PST:', formatInTimeZone(data.selectedDate, PST_TZ, "EEEE, MMMM d"))
+    }
+  }, [data.selectedDate, data.selectedTime])
 
   // Verificar si una fecha está disponible (no es pasado y la clínica está abierta con slots activos), respetando overrides
   const isDateAvailable = (date: Date) => {
@@ -441,8 +446,6 @@ export function DateTimeSelector() {
                     <h4 className="text-sm sm:text-base font-semibold text-foreground mb-1 sm:mb-2">{t('appointmentSummary')}</h4>
                     {data.selectedDate && data.selectedTime ? (
                       <div className="space-y-2">
-                        {console.log('📊 Summary - data.selectedDate:', data.selectedDate, 'ISO:', data.selectedDate.toISOString())}
-                        {console.log('📊 Summary - formatted in PST:', formatInTimeZone(data.selectedDate, PST_TZ, "EEEE, MMMM d"))}
                         <div className="flex items-center gap-2">
                           <div className="p-1.5 rounded-md bg-muted/50">
                             <CalendarIcon className="h-3 w-3 text-muted-foreground" />
