@@ -6,7 +6,6 @@ import { PST_TZ, dateKeyInTZ, dayOfWeekInTZ } from "@/lib/utils/timezone"
 import { useBusinessHours, useOverrides, useServices, useTherapistBookings } from "@/hooks"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useFormatter, useNow, useTranslations } from "next-intl"
-import { formatInTimeZone } from "date-fns-tz"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
