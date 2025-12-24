@@ -175,7 +175,7 @@ export function DateTimeSelector() {
       // Si un servicio dura 45 minutos, los slots se generarán cada 45 minutos
       const slotInterval = serviceDuration > 0 ? serviceDuration : 30 // Fallback a 30 min si no hay servicio
       
-      for (let minutes = slotStartMinutes; minutes + totalDuration <= slotEndMinutes; minutes += slotInterval) {
+      for (let minutes = slotStartMinutes; minutes < slotEndMinutes; minutes += slotInterval) {
         const timeSlot = minutesToTime(minutes)
         const isBooked = isTimeSlotBooked(selectedDate, timeSlot.value)
         
