@@ -43,7 +43,7 @@ export function buildGoogleCalendarUrl(
     details: input.description || "",
     location: input.location || "",
   });
-  return `https://calendar.google.com/calendar/render?${params.toString()}&ctz=${encodeURIComponent(tz)}`;
+  return `https://calendar.google.com/calendar/render?${params.toString()}&ctz=${encodeURIComponent(tz)}`; //for g calendar
 }
 
 export function buildICS(
