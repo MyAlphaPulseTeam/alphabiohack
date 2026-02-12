@@ -22,6 +22,8 @@ export async function GET() {
       where: { supabaseId: user.id },
     });
 
+    console.log("GET /api/user/profile: User data:", userProfile);
+
     if (!userProfile) {
       return NextResponse.json(
         { error: "User not found" },
@@ -56,7 +58,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { firstname, lastname, avatar } = body;
+    const { firstname, lastname, avatar, telefono } = body;
 
     const updatedUser = await prisma.user.update({
       where: { supabaseId: user.id },
@@ -64,6 +66,7 @@ export async function PUT(request: NextRequest) {
         firstname: firstname || undefined,
         lastname: lastname || undefined,
         avatar: avatar || undefined,
+        telefono: telefono || undefined,
       },
     });
 

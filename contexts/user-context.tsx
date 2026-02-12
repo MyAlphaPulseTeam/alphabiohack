@@ -80,17 +80,20 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       }
 
       try {
+        console.log("UserContext: Fetching prisma user for supabase user:", user.id);
         const response = await fetch("/api/user");
         if (response.ok) {
           const data = await response.json();
+          console.log("UserContext: Prisma user data received:", data);
           setPrismaUser(data.prismaUser);
           fetchedUserId.current = user.id;
         } else {
+          console.error("UserContext: Failed to fetch prisma user - Status:", response.status);
           setPrismaUser(null);
           fetchedUserId.current = null;
         }
       } catch (error) {
-        console.error("Error fetching prisma user:", error);
+        console.error("UserContext: Error fetching prisma user:", error);
         setPrismaUser(null);
         fetchedUserId.current = null;
       }

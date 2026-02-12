@@ -15,6 +15,7 @@ interface UserProfile {
   firstname: string;
   lastname: string;
   avatar?: string;
+  telefono?: string;
 }
 
 export function ProfileForm() {
@@ -28,17 +29,22 @@ export function ProfileForm() {
     firstname: "",
     lastname: "",
     avatar: "",
+    telefono: "",
   });
 
   useEffect(() => {
     if (prismaUser) {
+      console.log("ProfileForm: Loading user data", prismaUser);
       setFormData({
         id: prismaUser.id || "",
         email: prismaUser.email || "",
         firstname: prismaUser.firstname || "",
         lastname: prismaUser.lastname || "",
+        telefono: (prismaUser as { telefono?: string | null }).telefono ?? "",
         avatar: prismaUser.avatar || "",
       });
+    } else {
+      console.log("ProfileForm: No prismaUser available");
     }
   }, [prismaUser]);
 
@@ -77,6 +83,7 @@ export function ProfileForm() {
           firstname: formData.firstname,
           lastname: formData.lastname,
           avatar: formData.avatar,
+          telefono: formData.telefono,
         }),
       });
 
@@ -98,6 +105,14 @@ export function ProfileForm() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!prismaUser) {
+    return (
+      <div className="text-center py-6">
+        <p className="text-muted-foreground">No user data available</p>
       </div>
     );
   }
@@ -160,6 +175,20 @@ export function ProfileForm() {
           value={formData.avatar || ""}
           onChange={handleChange}
           placeholder={t("enterAvatarUrl")}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="telefono" className="text-sm font-medium">
+          {t("phone", { default: "Teléfono" })}
+        </label>
+        <Input
+          id="telefono"
+          name="telefono"
+          type="tel"
+          value={formData.telefono || ""}
+          onChange={handleChange}
+          placeholder={t("enterPhone", { default: "Ingresa tu número de teléfono" })}
         />
       </div>
 

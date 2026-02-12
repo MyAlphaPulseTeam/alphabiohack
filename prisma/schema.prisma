@@ -15,6 +15,7 @@ model User {
   firstname         String
   lastname          String
   avatar            String?
+  telefono          String?
   role              UserRole[]
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
