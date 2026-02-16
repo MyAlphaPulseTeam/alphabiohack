@@ -8,6 +8,7 @@
 "use client";
 
 import { Mail, MapPin, Phone } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { BusinessHours } from "@/components/contact/business-hours";
 import { InfoCard } from "@/components/contact/info-card";
@@ -21,10 +22,15 @@ interface ContactInfoProps {
 export function ContactInfo({ className }: ContactInfoProps) {
   const t = useTranslations("Contact");
   const { prismaUser } = useUser();
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Obtener el número de teléfono del usuario o usar el del JSON como fallback
-  const phoneNumber = prismaUser?.telefono || t("phoneNumber");
-  const address = prismaUser?.informacionPublica || t("address");
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Obtener el número de teléfono del usuario o usar el del JSON como fallback - solo si está hidratado
+  const phoneNumber = isHydrated ? (prismaUser?.telefono || t("phoneNumber")) : t("phoneNumber");
+  const address = isHydrated ? (prismaUser?.informacionPublica || t("address")) : t("address");
 
   return (
     <div className={`space-y-6 ${className || ""}`}>

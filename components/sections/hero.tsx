@@ -8,26 +8,29 @@ import Image from "next/image"
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from 'next-intl';
 import { useUser } from "@/contexts/user-context";
+import { useEffect, useState } from "react";
 
 export function HeroSection() {
   const t = useTranslations('Hero');
-  const { prismaUser, loading } = useUser();
+  const { prismaUser } = useUser();
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
   
   // Usar el avatar del usuario si existe, si no usar la imagen por defecto
-  const imageSource = prismaUser?.avatar ?? "/images/default-avatar.png";
+  const imageSource = prismaUser?.avatar || "https://bwqlvbnkfkrchjdbbcfl.supabase.co/storage/v1/object/public/avatars/ff21719d-ad00-4c1b-9274-c9452b556728/Imagen%20de%20WhatsApp%202025-09-09%20a%20las%2012.47.07_7afb8bfa.jpg";
   
-  // Construir el título dinámico con nombre del usuario
-  const fullName = prismaUser ? `${prismaUser.firstname} ${prismaUser.lastname}` : "";
-  const dynamicTitle = `Hello, I'm ${fullName}`;
+  // Construir el título dinámico con nombre del usuario - solo si está hidratado
+  const fullName = isHydrated && prismaUser ? `${prismaUser.firstname} ${prismaUser.lastname}` : null;
+  const dynamicTitle = fullName ? `Hello, I'm ${fullName}` : t('title');
   
-  // Obtener especialidad y summary del usuario
-  const especialidad = (prismaUser as { especialidad?: string })?.especialidad;
-  const summary = (prismaUser as { summary?: string })?.summary;
-  
-  // Supresión de hidratación: usar una clave única para evitar mismatch
-  const suppressHydration = loading;
+  // Obtener especialidad y summary del usuario - solo si está hidratado
+  const especialidad = isHydrated ? ((prismaUser as { especialidad?: string | null })?.especialidad || t('subtitle')) : t('subtitle');
+  const summary = isHydrated ? ((prismaUser as { summary?: string | null })?.summary || t('description')) : t('description');
   return (
-    <section className="bg-linear-to-br from-background to-muted py-20 lg:py-32" suppressHydrationWarning={suppressHydration}>
+    <section className="bg-linear-to-br from-background to-muted py-20 lg:py-32" suppressHydrationWarning={true}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
