@@ -8,11 +8,20 @@
 "use client";
 
 import { Mail, MapPin, Phone } from "lucide-react";
+import { useState, useEffect } from "react";
 
 import { BusinessHours } from "@/components/contact/business-hours";
 import { InfoCard } from "@/components/contact/info-card";
 import { useTranslations } from "next-intl";
 import { useUser } from "@/contexts/user-context";
+
+interface ContactData {
+  telefono?: string | null;
+  informacionPublica?: string | null;
+  weekdaysHours?: string | null;
+  saturdayHours?: string | null;
+  sundayHours?: string | null;
+}
 
 interface ContactInfoProps {
   readonly className?: string;
@@ -20,11 +29,36 @@ interface ContactInfoProps {
 
 export function ContactInfo({ className }: ContactInfoProps) {
   const t = useTranslations("Contact");
-  const { prismaUser, loading } = useUser();
+  const { prismaUser, loading: authLoading, isAuthenticated } = useUser();
+  const [publicData, setPublicData] = useState<ContactData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Logs para debugging
-  console.log("ContactInfo - loading:", loading);
-  console.log("ContactInfo - prismaUser:", prismaUser);
+  // Cuando no estamos autenticados, traer datos públicos
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const fetchPublicContact = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch("/api/public/contact");
+          if (response.ok) {
+            const data = await response.json();
+            setPublicData(data);
+          }
+        } catch (error) {
+          console.error("Error fetching public contact data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPublicContact();
+    } else {
+      // Si estamos autenticados, usar datos del contexto
+      setLoading(authLoading);
+    }
+  }, [isAuthenticated, authLoading]);
+
+  // Usar datos autenticados si existen, sino usar públicos
+  const contactData = isAuthenticated ? prismaUser : publicData;
 
   // Mostrar loader mientras carga
   if (loading) {
@@ -39,11 +73,8 @@ export function ContactInfo({ className }: ContactInfoProps) {
   }
 
   // Mostrar solo datos de BD, sin fallbacks
-  const phoneNumber = prismaUser?.telefono || "";
-  const address = prismaUser?.informacionPublica || "";
-  
-  console.log("ContactInfo - phoneNumber:", phoneNumber);
-  console.log("ContactInfo - address:", address);
+  const phoneNumber = contactData?.telefono || "";
+  const address = contactData?.informacionPublica || "";
 
   return (
     <div className={`space-y-6 ${className || ""}`}>

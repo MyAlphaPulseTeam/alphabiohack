@@ -8,22 +8,52 @@ import Image from "next/image"
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from 'next-intl';
 import { useUser } from "@/contexts/user-context";
+import { useState, useEffect } from "react";
+
+interface HeroData {
+  firstname: string;
+  lastname: string;
+  especialidad?: string | null;
+  summary?: string | null;
+  avatar?: string | null;
+}
 
 export function HeroSection() {
   const t = useTranslations('Hero');
-  const { prismaUser, loading } = useUser();
-  
-  // Logs para debugging
-  console.log("HeroSection - loading:", loading);
-  console.log("HeroSection - prismaUser:", prismaUser);
-  
-  // Usar el avatar del usuario si existe
-  const imageSource = prismaUser?.avatar || "";
-  
-  // Datos directamente de BD, sin fallbacks
-  const fullName = prismaUser ? `${prismaUser.firstname} ${prismaUser.lastname}` : "";
-  const especialidad = (prismaUser as { especialidad?: string | null })?.especialidad || "";
-  const summary = (prismaUser as { summary?: string | null })?.summary || "";
+  const { prismaUser, loading: authLoading, isAuthenticated } = useUser();
+  const [publicData, setPublicData] = useState<HeroData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Cuando no estamos autenticados, traer datos públicos
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const fetchPublicHero = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch("/api/public/hero");
+          if (response.ok) {
+            const data = await response.json();
+            setPublicData(data);
+          }
+        } catch (error) {
+          console.error("Error fetching public hero data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPublicHero();
+    } else {
+      // Si estamos autenticados, usar datos del contexto
+      setLoading(authLoading);
+    }
+  }, [isAuthenticated, authLoading]);
+
+  // Usar datos autenticados si existen, sino usar públicos
+  const heroData = isAuthenticated ? prismaUser : publicData;
+  const imageSource = heroData?.avatar || "";
+  const fullName = heroData ? `${heroData.firstname} ${heroData.lastname}` : "";
+  const especialidad = heroData?.especialidad || "";
+  const summary = heroData?.summary || "";
   
   return (
     <section className="bg-linear-to-br from-background to-muted py-20 lg:py-32" suppressHydrationWarning>
