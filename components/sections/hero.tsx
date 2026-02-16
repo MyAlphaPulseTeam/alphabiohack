@@ -11,7 +11,7 @@ import { useUser } from "@/contexts/user-context";
 
 export function HeroSection() {
   const t = useTranslations('Hero');
-  const { prismaUser } = useUser();
+  const { prismaUser, loading } = useUser();
   
   // Usar el avatar del usuario si existe, si no usar la imagen por defecto
   const imageSource = prismaUser?.avatar || "https://bwqlvbnkfkrchjdbbcfl.supabase.co/storage/v1/object/public/avatars/ff21719d-ad00-4c1b-9274-c9452b556728/Imagen%20de%20WhatsApp%202025-09-09%20a%20las%2012.47.07_7afb8bfa.jpg";
@@ -23,8 +23,11 @@ export function HeroSection() {
   // Obtener especialidad y summary del usuario
   const especialidad = (prismaUser as { especialidad?: string | null })?.especialidad || t('subtitle');
   const summary = (prismaUser as { summary?: string | null })?.summary || t('description');
+  
+  // Supresión de hidratación: usar una clave única para evitar mismatch
+  const suppressHydration = loading;
   return (
-    <section className="bg-linear-to-br from-background to-muted py-20 lg:py-32">
+    <section className="bg-linear-to-br from-background to-muted py-20 lg:py-32" suppressHydrationWarning={suppressHydration}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
