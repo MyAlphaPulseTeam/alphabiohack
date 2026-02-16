@@ -22,6 +22,10 @@ export function ContactInfo({ className }: ContactInfoProps) {
   const t = useTranslations("Contact");
   const { prismaUser, loading } = useUser();
 
+  // Logs para debugging
+  console.log("ContactInfo - loading:", loading);
+  console.log("ContactInfo - prismaUser:", prismaUser);
+
   // Mostrar loader mientras carga
   if (loading) {
     return (
@@ -37,6 +41,9 @@ export function ContactInfo({ className }: ContactInfoProps) {
   // Mostrar solo datos de BD, sin fallbacks
   const phoneNumber = prismaUser?.telefono || "";
   const address = prismaUser?.informacionPublica || "";
+  
+  console.log("ContactInfo - phoneNumber:", phoneNumber);
+  console.log("ContactInfo - address:", address);
 
   return (
     <div className={`space-y-6 ${className || ""}`}>

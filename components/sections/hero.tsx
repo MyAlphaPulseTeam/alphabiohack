@@ -13,6 +13,10 @@ export function HeroSection() {
   const t = useTranslations('Hero');
   const { prismaUser, loading } = useUser();
   
+  // Logs para debugging
+  console.log("HeroSection - loading:", loading);
+  console.log("HeroSection - prismaUser:", prismaUser);
+  
   // Usar el avatar del usuario si existe
   const imageSource = prismaUser?.avatar || "";
   
@@ -78,17 +82,26 @@ export function HeroSection() {
             <div className="relative w-full max-w-md mx-auto">
               <div className="absolute inset-0 bg-primary rounded-full transform scale-110 opacity-20"></div>
               <div className="relative bg-primary rounded-full p-8">
-               
-                  {imageSource && (
-                    <Image
-                      src={imageSource}
-                      alt={`${fullName} profile`}
-                      className="w-full h-auto rounded-full object-cover"
-                      width={500}
-                      height={500}
-                    />
-                  )}
-                
+                {imageSource && (
+                  <>
+                    {imageSource.startsWith('data:image') ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={imageSource}
+                        alt={`${fullName} profile`}
+                        className="w-full h-auto rounded-full object-cover"
+                      />
+                    ) : (
+                      <Image
+                        src={imageSource}
+                        alt={`${fullName} profile`}
+                        className="w-full h-auto rounded-full object-cover"
+                        width={500}
+                        height={500}
+                      />
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
