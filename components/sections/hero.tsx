@@ -14,15 +14,15 @@ export function HeroSection() {
   const { prismaUser, loading } = useUser();
   
   // Usar el avatar del usuario si existe, si no usar la imagen por defecto
-  const imageSource = prismaUser?.avatar || "https://bwqlvbnkfkrchjdbbcfl.supabase.co/storage/v1/object/public/avatars/ff21719d-ad00-4c1b-9274-c9452b556728/Imagen%20de%20WhatsApp%202025-09-09%20a%20las%2012.47.07_7afb8bfa.jpg";
+  const imageSource = prismaUser?.avatar ?? "/images/default-avatar.png";
   
   // Construir el título dinámico con nombre del usuario
-  const fullName = prismaUser ? `${prismaUser.firstname} ${prismaUser.lastname}` : null;
-  const dynamicTitle = fullName ? `Hello, I'm ${fullName}` : t('title');
+  const fullName = prismaUser ? `${prismaUser.firstname} ${prismaUser.lastname}` : "";
+  const dynamicTitle = `Hello, I'm ${fullName}`;
   
   // Obtener especialidad y summary del usuario
-  const especialidad = (prismaUser as { especialidad?: string | null })?.especialidad || t('subtitle');
-  const summary = (prismaUser as { summary?: string | null })?.summary || t('description');
+  const especialidad = (prismaUser as { especialidad?: string })?.especialidad;
+  const summary = (prismaUser as { summary?: string })?.summary;
   
   // Supresión de hidratación: usar una clave única para evitar mismatch
   const suppressHydration = loading;
@@ -76,16 +76,7 @@ export function HeroSection() {
             <div className="relative w-full max-w-md mx-auto">
               <div className="absolute inset-0 bg-primary rounded-full transform scale-110 opacity-20"></div>
               <div className="relative bg-primary rounded-full p-8">
-                {imageSource.startsWith('data:image') ? (
-                  // Si es base64, usar img regular
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={imageSource}
-                    alt={t('doctorImageAlt')}
-                    className="w-full h-auto rounded-full object-cover"
-                  />
-                ) : (
-                  // Si es URL, usar Next.js Image
+               
                   <Image
                     src={imageSource}
                     alt={t('doctorImageAlt')}
@@ -93,7 +84,7 @@ export function HeroSection() {
                     width={500}
                     height={500}
                   />
-                )}
+                
               </div>
             </div>
           </div>
