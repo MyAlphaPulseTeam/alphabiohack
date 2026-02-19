@@ -8,7 +8,6 @@ import {
   Youtube,
   Globe,
 } from "lucide-react";
-import Link from "next/link";
 
 interface SocialLinksProps {
   facebook?: string | null;
@@ -44,7 +43,9 @@ export function SocialLinks({
   ];
 
   // Filtrar solo los links que tienen URL
-  const activeLinks = links.filter((link) => link.url);
+  const activeLinks = links.filter(
+    (link): link is typeof link & { url: string } => typeof link.url === "string",
+  );
 
   if (activeLinks.length === 0) {
     return null;
